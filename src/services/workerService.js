@@ -54,7 +54,6 @@ const moveToDLQ = (job, reason) => {
   });
 };
 
-
 // ----------------------------
 // Helper: Schedule retry with exponential backoff
 // ----------------------------
@@ -73,34 +72,6 @@ const scheduleRetry = (job) => {
     );
   }, delay);
 };
-
-
-exports.retryDLQ = (jobId) => {
-  return new Promise((resolve, reject) => {
-    // Get job from DLQ
-    db.get(`SELECT * FROM dlq WHERE id = ?`, [jobId], (err, row) => {
-      if (err) return reject(err);
-      if (!row) return reject(new Error("Job not found in DLQ"));
-
-      // Insert back into jobs table for re-processing
-      db.run(
-        `INSERT INTO jobs (id, command, state, attempts, max_retries, created_at, updated_at)
-         VALUES (?, ?, 'pending', 0, ?, datetime('now'), datetime('now'))`,
-        [row.id, row.command, row.attempts],
-        (err2) => {
-          if (err2) return reject(err2);
-
-          // Remove from DLQ
-          db.run(`DELETE FROM dlq WHERE id = ?`, [jobId], (err3) => {
-            if (err3) console.error("Failed to remove job from DLQ:", err3);
-            resolve(row);
-          });
-        }
-      );
-    });
-  });
-};
-
 
 // ----------------------------
 // Execute the job
@@ -176,4 +147,9 @@ const stopWorkers = () => {
   console.log("All workers stopped.");
 };
 
-module.exports = { startWorkers, stopWorkers };
+// ----------------------------
+// Get number of active workers
+// ----------------------------
+const getWorkerCount = () => workers.length;
+
+module.exports = { startWorkers, stopWorkers, getWorkerCount };

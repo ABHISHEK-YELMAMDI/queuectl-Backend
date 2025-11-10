@@ -1,0 +1,12 @@
+[
+  { "id": "job11", "command": "echo Hello from job1", "max_retries": 3 },
+  { "id": "job21", "command": "invalidcommand", "max_retries": 2 },
+  { "id": "job3", "command": "sleep 2", "max_retries": 3 },
+  { "id": "job4", "command": "echo Quick job 4", "max_retries": 1 },
+  { "id": "job5", "command": "exit 1", "max_retries": 3 },
+  { "id": "job6", "command": "echo Job6 done", "max_retries": 2 },
+  { "id": "job7", "command": "invalidcmd2", "max_retries": 2 },
+  { "id": "job8", "command": "sleep 1", "max_retries": 1 },
+  { "id": "job9", "command": "echo Job9 finished", "max_retries": 3 },
+  { "id": "job10", "command": "exit 1", "max_retries": 2 }
+]

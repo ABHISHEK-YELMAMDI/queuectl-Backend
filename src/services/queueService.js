@@ -92,3 +92,14 @@ exports.retryDLQ = (id) => {
     });
   });
 };
+
+
+exports.getJobStatus = (jobId) => {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT id, state, attempts, max_retries, created_at, updated_at FROM jobs WHERE id=?`;
+    db.get(query, [jobId], (err, row) => {
+      if (err) return reject(err);
+      resolve(row); // returns null if job not found
+    });
+  });
+};

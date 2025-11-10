@@ -72,3 +72,14 @@ exports.retryDLQ = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+exports.getJobStatus = async (req, res) => {
+  try {
+    const data = await queueService.getJobStatus(req.params.id);
+    if (!data) return res.status(404).json({ success: false, error: "Job not found" });
+    res.status(200).json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
