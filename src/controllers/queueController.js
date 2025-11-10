@@ -1,4 +1,7 @@
 const queueService = require("../services/queueService");
+const workerService = require("../services/workerService");
+
+// -------------------- QUEUE CONTROLLERS --------------------
 
 exports.enqueue = async (req, res) => {
   try {
@@ -36,7 +39,7 @@ exports.list = async (req, res) => {
   }
 };
 
-const workerService = require("../services/workerService");
+// -------------------- WORKER CONTROLLERS --------------------
 
 exports.startWorkers = (req, res) => {
   const count = parseInt(req.query.count) || 1;
@@ -49,3 +52,23 @@ exports.stopWorkers = (req, res) => {
   res.json({ success: true, message: "All workers stopped" });
 };
 
+// -------------------- DLQ CONTROLLERS --------------------
+
+exports.listDLQ = async (req, res) => {
+  try {
+    const data = await queueService.listDLQ();
+    res.status(200).json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+exports.retryDLQ = async (req, res) => {
+  try {
+    const data = await queueService.retryDLQ(req.params.id);
+    if (!data) return res.status(404).json({ success: false, message: "DLQ job not found" });
+    res.status(200).json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};

@@ -8,6 +8,8 @@ router.get("/peek", queueController.peek);
 router.get("/list", queueController.list);
 router.post("/worker/start", queueController.startWorkers);
 router.post("/worker/stop", queueController.stopWorkers);
+router.get('/dlq/list', queueController.listDLQ);
+router.post('/dlq/retry/:id', queueController.retryDLQ);
 
 
 module.exports = router;
