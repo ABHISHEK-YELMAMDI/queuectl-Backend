@@ -1,34 +1,34 @@
-QueueCTL Backend
+**QueueCTL Backend**
 
 QueueCTL is a lightweight, command-line–driven job-queue system built in Node.js with SQLite for persistent storage. It supports job scheduling, retry mechanisms, worker execution, and Dead Letter Queue (DLQ) management. The project is designed for local development and controlled execution environments.
 
 Repository: https://github.com/abhishek-yelmamdi/queuectl-backend
 
-Table of Contents
+**Table of Contents**
 
-Overview
+1.Overview
 
-Architecture
+2.Architecture
 
-Directory Structure
+3.Directory Structure
 
-Installation
+4.Installation
 
-Database
+5.Database
 
-CLI Usage
+6.CLI Usage
 
-Worker Execution Model
+7.Worker Execution Model
 
-Dead Letter Queue
+8.Dead Letter Queue
 
-Status and Monitoring
+9.Status and Monitoring
 
-Example Workflow
+**Example Workflow**
 
 Notes and Assumptions
 
-1. Overview
+**1. Overview**
 
 QueueCTL offers a minimal yet functional job-processing system using:
 
@@ -40,7 +40,7 @@ A fully CLI-based interface for enqueueing, executing, monitoring, and retrying 
 
 The system is intentionally minimal, self-contained, and does not rely on external services or background daemons.
 
-2. Architecture
+**2. Architecture**
 
 The system is composed of:
 
@@ -50,13 +50,13 @@ Worker Service: Continuously polls pending jobs and executes them with retry and
 
 CLI Interface: Exposes all management operations, including enqueue, worker control, listing, and status.
 
-Jobs follow a lifecycle:
+**Jobs follow a lifecycle:**
 
 pending → processing → completed
 or
 pending → processing → failed → DLQ
 
-3. Directory Structure
+**3. Directory Structure**
 queuectl-backend
 ├─ server.js
 ├─ app.js
@@ -80,26 +80,28 @@ The SQLite database file is stored in:
 
 src/db/queuectl.db
 
-4. Installation
+**4. Installation**
 
 Clone the repository:
 
-git clone https://github.com/abhishek-yelmamdi/queuectl-backend.git
-cd queuectl-backend
+
+**git clone https://github.com/abhishek-yelmamdi/queuectl-backend.git
+cd queuectl-backend**
+
 
 
 Install dependencies:
 
 npm install
 
-5. Database
+**5. Database**
 
 On first use, the system automatically initializes the schema in:
 
 src/db/queuectl.db
 
 
-Tables:
+**Tables:**
 
 jobs: Stores queued jobs.
 
@@ -107,11 +109,12 @@ dlq: Stores jobs that exceeded retry attempts.
 
 No manual migration is required.
 
-6. CLI Usage
+
+**6. CLI Usage**
 
 All interaction is performed using cli.js.
 
-6.1 Enqueue Jobs from File
+**6.1 Enqueue Jobs from File**
 
 job.json must contain valid job objects with fields:
 
@@ -131,7 +134,7 @@ Example:
 
 Enqueue:
 
-node cli.js enqueue --file job.json
+**node cli.js enqueue --file job.json**
 
 6.2 Enqueue Single Job via JSON String
 node cli.js enqueue '{"id":"jobX","command":"echo Test","max_retries":1}'
@@ -145,18 +148,18 @@ node cli.js peek
 6.5 Dequeue Manually (optional)
 node cli.js dequeue
 
-7. Worker Execution Model
+**7. Worker Execution Model**
 
-Workers are started explicitly via CLI. They poll for pending jobs, mark them as processing, execute shell commands, apply backoff for retries, and route failed jobs to DLQ.
+Workers are started explicitly via CLI. They poll for pending jobs, mark them as processing, execute shell commands, apply backoff for retries, and route failed jobs to DLQ."/n"
 
-Start Workers
+**Start Workers**
 node cli.js worker:start --count 2
 
-Stop Workers
+**Stop Workers**
 node cli.js worker:stop
 
 
-Worker behavior includes:
+**Worker behavior includes:**
 
 Exponential backoff retry strategy
 
@@ -164,7 +167,7 @@ state transitions
 
 Finalization into DLQ after exceeding max_retries
 
-8. Dead Letter Queue (DLQ)
+**8. Dead Letter Queue (DLQ)**
 List DLQ Jobs
 node cli.js dlq:list
 
@@ -174,14 +177,14 @@ node cli.js dlq:retry <jobId>
 
 This resets attempts and reintroduces the job into the main queue.
 
-9. Status and Monitoring
+**9. Status and Monitoring**
 
 Display a summary of queue and worker activity:
 
 node cli.js status
 
 
-This reports:
+**This reports:**
 
 Total jobs
 
@@ -195,24 +198,24 @@ DLQ count
 
 Active worker count
 
-10. Example Workflow
+**10. Example Workflow**
 
 Prepare job definitions:
 
 job.json
 
 
-Enqueue jobs:
+**Enqueue jobs:**
 
 node cli.js enqueue --file job.json
 
 
-Start workers:
+**Start workers:**
 
 node cli.js worker:start --count 2
 
 
-Review progress:
+**Review progress:**
 
 node cli.js list
 node cli.js dlq:list
